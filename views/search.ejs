@@ -1,0 +1,56 @@
+<h1>Results: <%=found.length%></h1>
+
+<br />
+	<%
+		for( var b=0; b< found.length; b++ )
+		{
+	%>	
+		<div class="well">
+			<div class="row-fluid">
+				<div class="span6">
+					<h3><%=found[b].pubdate%></h3>
+					<h6>Matches: <%=found[b].matches%></h6>
+				</div>
+				
+				<div class="span6">
+					<h4 class="pull-right">by <%=found[b].author%></h4>
+				</div>
+				
+			</div>
+			 
+			<h2>
+				<a href="/blogs/<%=found[b].blogClassname.replace(/\_/g,'-')%>">
+					<%=found[b].blogtitle%>
+				</a>
+			</h2>
+			
+			<div class="row-fluid">
+				<div class="span12">
+				<h4>Tags</h4>
+				<%
+					if( found[b].tags && found[b].tags.length>0 )
+					{
+				%><h5>
+				<%
+						for( var t=0; t<found[b].tags.length; t++ )
+						{
+				%>		<a href="/search/<%=encodeURIComponent(found[b].tags[t])%>">
+							<%=found[b].tags[t]%></a>&nbsp;
+				<%			
+						}
+				%></h5>
+				<%
+					}
+					else{
+				%>	<p>None</p>
+				<%
+					}
+				%>
+				</div>
+			</div>
+		</div>
+		
+	<%	
+		}		
+	%>
+
