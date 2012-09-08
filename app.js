@@ -4,21 +4,41 @@
  */
 
 var express = require('express')
-  , routes = require('./routes');
-
-var app = module.exports = express.createServer();
+  , routes = require('./routes')
+  , fs = require('fs')
+  , users = JSON.parse(fs.readFileSync('./users.json', 'utf8'))
+  , secret = '98Jns104bf76zzx4'
+  , app = module.exports = express.createServer()
+;
 
 // Configuration
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
+  app.set('users', users);
+  app.set('secret', secret);
+  
+  app.set('blogs', JSON.parse(fs.readFileSync('./blogs.json', 'utf8')) );
+  
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({ secret: 'your secret here' }));
+  app.use(express.session({ secret: secret }));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
+});
+
+app.dynamicHelpers({
+    session: function (req, res) {
+        return req.session;
+    },
+	blogs: function (req, res) {
+		return req.app.settings.blogs;
+	},
+	users: function (req, res) {
+		return req.app.settings.users;
+	}
 });
 
 app.configure('development', function(){
@@ -29,11 +49,38 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-// Routes
+/* ROUTES */
 
+/* always auth */
+app.all('/accounts/*', routes.requireAuthentication);
+app.all('/accounts', routes.requireAuthentication);
+app.all('/manage/*', routes.requireAuthentication);
+app.all('/manage', routes.requireAuthentication);
+
+/* account stuff */
+app.get('/login', routes.manage.dash);
+app.post('/login', routes.accounts.login);
+app.get('/logout', routes.accounts.logout);
+
+app.get('/accounts/create', routes.accounts.views.create);
+app.post('/accounts/create', routes.accounts.create);
+
+app.get('/accounts/edit/:login', routes.accounts.views.edit);
+
+app.get('/accounts/remove/:deleteLogin', routes.accounts.views.remove);
+app.post('/accounts/remove/:deleteLogin', routes.accounts.remove);
+
+
+/* app management */
+app.get('/manage', routes.manage.dash);
+app.get('/manage/dash', routes.manage.dash);
+
+/* general viewer stuff */
 app.get('/', routes.index);
+
 app.get('/blogs/:urltitle', routes.blogs);
 app.get('/blogs', routes.allBlogs);
+
 app.get('/search/:query', routes.search);
 app.get('/search', routes.search);
 

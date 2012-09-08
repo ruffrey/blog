@@ -1,0 +1,100 @@
+<h1>Welcome, <%=session.display%></h1>
+<div class="row">
+	<br />
+	<div class="row">
+		<div class="span3">
+			<ul class="nav nav-list" style="position:fixed;">
+				<li>
+					<a href="#blogs">Blogs</a>
+				</li>
+				<li>
+					<a href="#users">Users</a>
+				</li>
+				<li>
+					<a href="#settings">Settings</a>
+				</li>
+			</ul>		
+		</div>
+		<div class="span9">
+			<div class="row">
+				<div class="span12 well" id="blogs">
+					<h2>Blogs</h2>
+					<br />
+					<table class="table table-condensed">
+					<tbody>
+					<% for( var b in blogs ) { %>
+						<tr>
+							<td>
+								<a href="/blogs/<%=b%>">
+									<%=blogs[b].blogtitle%> 
+								</a>
+							</td>
+							<td><%=blogs[b].pubdate%></td>
+							<td>
+								<a class="btn" href="/manage/blogs/edit/<%=b%>">
+									<i class="icon-pencil"></i>
+								</a>
+							</td>
+						</tr>
+					<% } %>
+					</tbody>
+					</table>
+					<p>
+						<a href="/manage/blogs/create">
+							<strong>Add new</strong>
+							<i class="icon-plus"></i>
+						</a>
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="span12 well" id="users">
+					<h2>Users</h2>
+					<br />
+					<table class="table table-condensed">
+					<tbody>
+					<% for( var u in users ) { %>
+						
+						<tr>
+							<td><a href="/accounts/edit/<%=u%>">
+								<%=users[u].display%> [<%=u%>]
+							</a></td>
+							<td><a class="btn btn-danger" href="/accounts/remove/<%=u%>">
+								<i class="icon-remove icon-white"></i>
+							</a></td>
+						</tr>
+					<% } %>
+					</tbody>
+					</table>
+					<p>
+						<a href="/accounts/create">
+							<strong>Add new</strong>
+							<i class="icon-plus"></i>
+						</a>
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="span12 well" id="settings">
+					<h2>Settings</h2>
+					<br />
+					<form action="/manage/settings" method="post">
+						<label for="site_name">Site name</label>
+						<input id="site_name" name="site_name" class="input-large"
+							<%=settings.title_name%> />
+							
+						<label for="title_name">Site title tag name</label>
+						<input id="title_name" name="title_name" class="input-large"
+							<%=settings.title_name%> />
+						
+						<label for="blogs_to_show">Number of blogs on homepage</label>
+						<input id="blogs_to_show" name="blogs_to_show" class="input-mini"
+							<%=settings.blogs_to_show%> />
+						
+					</form>
+				</div>
+			</div>
+		
+		</div>
+	</div>	
+</div>

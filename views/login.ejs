@@ -1,0 +1,24 @@
+<script type="text/javascript">
+$(function(){
+	$('#login').focus();
+});
+</script>
+<form action="/login" method="post">
+	<% if( typeof(message)!="undefined" ) { %>
+		<p><%=message%></p>
+	<% } %>
+	<div class="well">
+		<label for="login">Login</label>
+		<input name="login" id="login" />
+		
+		<label for="password">Password</label>
+		<input type="password" id="password" name="password" />
+		
+		<br />
+		
+		<button type="submit" class="btn btn-primary">
+			Go
+			<i class="icon-chevron-right icon-white"></i>
+		</button>
+	</div>
+</form>

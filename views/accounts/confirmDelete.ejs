@@ -1,0 +1,46 @@
+<script type="text/javascript">
+$(function(){
+	var oksubmit = false;
+	$('form#formd').submit(function(){
+		if(!oksubmit)
+		{ return false; }
+	});
+	$('input#confirmDelete').keyup(function(){
+		if($(this).val()==$('input[name="deleteLogin"]').val())
+		{ 
+			$('#delb').removeAttr('disabled'); 
+			oksubmit = true; 
+		}
+		else{
+			oksubmit=false;
+			$('#delb').attr('disabled','disabled');
+		}
+	});
+});
+</script>
+
+<div class="hero-unit">
+	<h1>Are you sure you want to delete the account for <em><%=deleteLogin%></em>?</h1>
+	<h2>
+		This cannot be undone - however all posts will remain.
+	</h2>
+</div>
+
+<form action="/accounts/remove/<%=deleteLogin%>" 
+	method="post" id="formd" class="well">
+	<input name="deleteLogin" type="hidden" value="<%=deleteLogin%>" />
+			
+	<label for="confirmDelete">Type the account name to confirm:</label>
+	
+	<input id="confirmDelete" placeholder="<%=deleteLogin%>" />
+	
+	<br />
+	<br />
+	
+	<button id="delb" type="submit" class="btn btn-danger" disabled="disabled">
+		COMPLETELY DELETE
+		<i class="icon-fire icon-white"></i>
+	</button>
+	<br />
+	
+</form>

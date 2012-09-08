@@ -6,7 +6,9 @@
 	<link rel="stylesheet" style="text/css" href="/css/strap.css" />
 	<link rel="stylesheet" style="text/css" href="/css/style.css" />
 	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script src="/js/strap.js"></script>
+	
 	<script type="text/javascript">
 	  var _gaq=_gaq||[];_gaq.push(['_setAccount','UA-9491937-4']);_gaq.push(['_setDomainName','wiggleware.com']);_gaq.push(['_trackPageview']);(function(){var ga=document.createElement('script');ga.type='text/javascript';ga.async=true;ga.src=('https:'==document.location.protocol?'https://ssl':'http://www')+'.google-analytics.com/ga.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ga,s);})();
 	</script>
@@ -26,9 +28,32 @@
 		  <input type="text" class="span2" 
 			name="query" placeholder="Search blog" />
 		</form>
+		<% if(session.login) { %>
+		<ul class="nav pull-right">
+			<li title="Go to dashboard">
+				<a href="/manage">
+					<%=session.display%>
+					<i class="icon-user"></i>
+				</a>
+			</li>
+			<li>
+				<a href="/logout">
+					Logout
+					<i class="icon-off"></i>
+				</a>
+			</li>
+		</ul>
+		<% } %>
     </div>
   </div>
 </div>
+<% if(typeof(notify)!="undefined"){ %>
+	<div class="alert alert-info"><%=notify%></div>
+<% } %>
+<% if(typeof(danger)!="undefined"){ %>
+	<div class="alert alert-danger"><%=danger%></div>
+<% } %>
+
 <div class="container">
 	<div class="row-fluid">
 	<div class="span12">
@@ -36,7 +61,6 @@
 	</div>
 	</div>
 </div>
-
 <!-- footer -->
 <div class="row-fluid">
 	<div class="span12">
@@ -47,6 +71,9 @@
 	<div class="span9">
 		<div class="help-block">
 			&copy; 2012 <a href="//www.wiggleware.com">Wiggleware</a>
+			<a href="/manage">
+				<i class="icon-user"></i>
+			</a>
 		</div>
 	</div>
 	<div class="span3">

@@ -1,0 +1,50 @@
+<script type="text/javascript">
+$(function(){
+	$('#login').focus();
+});
+</script>
+
+<div class="hero-unit">
+<h1><%=title%></h1>
+
+<%  if( create.errors ) { %>
+
+	<div class="alert alert-error">
+		<% for( var e=0;e<create.errors.length;e++ ) { %>
+			  
+			  <p><%=create.errors[e]%></p>
+			  
+		<% } %>
+	</div>
+	
+	<h2>Try again.</h2>
+	<br />
+<% } %>
+
+<form method="post" action="/accounts/create">
+	<input name="origLogin" type="hidden" value="<%=create.origLogin%>" />
+
+	<label for="login">Login</label>
+	<input name="login" id="login" value="<%=create.login%>" />
+	
+	<label for="display">Display Name</label>
+	<input name="display" id="display" value="<%=create.display%>" />
+	
+	<label for="password">Password</label>
+	<input name="password" id="password" type="password"
+		value="<%=create.password%>" />
+	
+	<label for="confirmPassword">Confirm Password</label>
+	<input name="confirmPassword" id="confirmPassword" type="password"
+		value="<%=create.confirmPassword%>" />
+	
+	<hr />
+	
+	<button type="submit" class="btn btn-large btn-primary">
+		Save 
+		<i class="icon-hdd icon-white"></i>
+	</button>
+	
+</form>
+
+</div>
