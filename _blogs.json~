@@ -1,0 +1,18 @@
+{
+	"perpetual_creativity": {
+		"blogtitle": "Perpetual Creativity"
+	   ,"author": "ruffrey"
+	   ,"published": true
+	   ,"pubdate":"8/4/2012 4:02PM"
+	   ,"tags": ["perpetual creativity","innovation","constant progress"]
+	}	
+	
+	,"node_js_content_management": {
+		"blogtitle": "Using Node.js for content management"
+	   ,"author": "ruffrey"
+	   ,"published": true
+	   ,"pubdate":"8/9/2012 10:11PM"
+	   ,"tags": ["node.js","content management","cms","looseleaf","calipso","innovation"]
+	}	
+	
+}

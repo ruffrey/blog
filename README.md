@@ -1,3 +1,4 @@
 the wiggleware blog
 ======================
-that's it
+
+Almost ready for the big time.
