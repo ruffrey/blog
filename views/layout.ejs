@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-	<title><%=title%></title>
+	<title><%=general.app_title_tag%> - <%=title%></title>
 	
 	<link rel="stylesheet" style="text/css" href="/css/strap.css" />
 	<link rel="stylesheet" style="text/css" href="/css/style.css" />
@@ -9,16 +9,14 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script src="/js/strap.js"></script>
 	
-	<script type="text/javascript">
-	  var _gaq=_gaq||[];_gaq.push(['_setAccount','UA-9491937-4']);_gaq.push(['_setDomainName','wiggleware.com']);_gaq.push(['_trackPageview']);(function(){var ga=document.createElement('script');ga.type='text/javascript';ga.async=true;ga.src=('https:'==document.location.protocol?'https://ssl':'http://www')+'.google-analytics.com/ga.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ga,s);})();
-	</script>
+	<script type="text/javascript"><%=general.google_analytics%></script>
 </head>
 <body>
 <div class="navbar">
   <div class="navbar-inner">
     <div class="container">
 		<a class="brand" href="/">
-			Wiggle Bytes
+			<%=general.home_button_text%>
 		</a>
 		<ul class="nav">
 		  <li><a href="/blogs">Archive</a></li>

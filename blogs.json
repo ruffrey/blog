@@ -1,18 +1,1 @@
-{
-	"perpetual_creativity": {
-		"blogtitle": "Perpetual Creativity"
-	   ,"author": "ruffrey"
-	   ,"published": true
-	   ,"pubdate":"8/4/2012 4:02PM"
-	   ,"tags": ["perpetual creativity","innovation","constant progress"]
-	}	
-	
-	,"node_js_content_management": {
-		"blogtitle": "Using Node.js for content management"
-	   ,"author": "ruffrey"
-	   ,"published": true
-	   ,"pubdate":"8/9/2012 10:11PM"
-	   ,"tags": ["node.js","content management","cms","looseleaf","calipso","innovation"]
-	}	
-	
-}
+{"perpetual_creativity":{"blogtitle":"Perpetual Creativity","author":"ruffrey","published":true,"pubdate":"8/4/2012 4:02PM","tags":["perpetual creativity","innovation","constant progress"],"blogClassname":"perpetual_creativity"},"node_js_content_management":{"blogtitle":"Using Node.js for content management","author":"ruffrey","published":true,"pubdate":"8/9/2012 10:11PM","tags":["node.js","content management","cms","looseleaf","calipso","innovation"],"blogClassname":"node_js_content_management","classname":"node_js_content_management","origClassname":"node_js_content_management"},"a_blog_entry":{"blogtitle":"a blog entry","author":"jpx","published":true,"pubdate":"8/9/2013 10:11PM","tags":["yahoo","manbutter"],"blogClassname":"a_blog_entry","matches":1,"view":"a_blog_entry","title":"[wigglebytes] a blog entry","classname":"a_blog_entry","origClassname":"a_blog_entry"},"asdf_hihi":{"tags":[""],"origClassname":"","blogtitle":"sdfg","author":"jpx","pubdate":"9/20/2012 6:06PM","published":true,"blogClassname":"asdf_hihi"}}

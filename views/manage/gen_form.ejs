@@ -1,0 +1,35 @@
+<div class="row">
+	<div class="span12 well" id="settings">
+		<h2>Settings</h2>
+		<br />
+		<form action="/manage/general/save" method="post">
+			<label for="app_title">Site title</label>
+			<input id="app_title" name="app_title" class="input-large"
+				value="<%=general.app_title%>" />
+			
+			<label for="home_button_text">Home button text</label>
+			<input id="home_button_text" name="home_button_text" class="input-large"
+				value="<%=general.home_button_text%>" />
+				
+			<label for="app_title_tag">Site title tag</label>
+			<input id="app_title_tag" name="app_title_tag" class="input-large"
+				value="<%=general.app_title_tag%>" />
+				
+			<label for="blogs_on_homepage">Number of blogs on homepage</label>
+			<input id="blogs_on_homepage" name="blogs_on_homepage" class="input-mini"
+				value="<%=general.blogs_on_homepage%>" />
+			
+			<label for="google_analytics">Google Analytics script</label>
+			<textarea id="google_analytics" name="google_analytics" 
+			class="span12 monospace"><%=general.google_analytics%></textarea>
+				
+			<br />
+			<br />
+			
+			<button type="submit" class="btn btn-success">
+				<i class="icon-hdd icon-white"></i>
+				Save Settings
+			</button>
+		</form>
+	</div>
+</div>

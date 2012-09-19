@@ -3,7 +3,7 @@
 	<br />
 	<div class="row">
 		<div class="span3">
-			<ul class="nav nav-list" style="position:fixed;">
+			<ul class="nav nav-list well" style="position:fixed;">
 				<li>
 					<a href="#blogs">Blogs</a>
 				</li>
@@ -25,11 +25,28 @@
 					<% for( var b in blogs ) { %>
 						<tr>
 							<td>
-								<a href="/blogs/<%=b%>">
+								<a href="/manage/blogs/<%=b%>/preview">
 									<%=blogs[b].blogtitle%> 
 								</a>
 							</td>
 							<td><%=blogs[b].pubdate%></td>
+							<td>
+								<% if( blogs[b].published ) { %>
+									<a class="btn btn-success" 
+										title="Published - click to unpublish"
+										href="/manage/blogs/<%=b%>/unpublish">
+										<i class="icon-eye-open icon-white"></i>
+									</a>
+									
+								<% } else { %>
+									<a class="btn btn-warning" 
+										title="Not published - click to publish"
+										href="/manage/blogs/<%=b%>/publish">
+										<i class="icon-eye-close"></i>
+									</a>
+									
+								<% } %>
+							</td>
 							<td>
 								<a class="btn" href="/manage/blogs/edit/<%=b%>">
 									<i class="icon-pencil"></i>
@@ -74,26 +91,7 @@
 					</p>
 				</div>
 			</div>
-			<div class="row">
-				<div class="span12 well" id="settings">
-					<h2>Settings</h2>
-					<br />
-					<form action="/manage/settings" method="post">
-						<label for="site_name">Site name</label>
-						<input id="site_name" name="site_name" class="input-large"
-							<%=settings.title_name%> />
-							
-						<label for="title_name">Site title tag name</label>
-						<input id="title_name" name="title_name" class="input-large"
-							<%=settings.title_name%> />
-						
-						<label for="blogs_to_show">Number of blogs on homepage</label>
-						<input id="blogs_to_show" name="blogs_to_show" class="input-mini"
-							<%=settings.blogs_to_show%> />
-						
-					</form>
-				</div>
-			</div>
+			<%-partial("./manage/gen_form")%>
 		
 		</div>
 	</div>	

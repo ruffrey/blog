@@ -1,0 +1,53 @@
+<% 	var b;b=b||{};
+
+	var blogtext;
+	blogtext = b.classname ? partial("../blogs/"+b.classname) : "";
+	
+%>
+<script src="http://js.nicedit.com/nicEdit-latest.js" type="text/javascript"></script>
+<script type="text/javascript">bkLib.onDomLoaded(nicEditors.allTextAreas);</script>
+
+<form method="post" action="/manage/blogs/save" class="form">
+<div class="hero-unit">
+
+	<input type="hidden" name="origClassname" value="<%=b.classname||""%>" />
+	
+	<label for="blogtitle">Title</label>
+	<input type="text" id="blogtitle" name="blogtitle" value="<%=b.blogtitle||""%>" />
+	
+	<label for="classname">Link</label>
+	<input type="text" id="classname" name="classname" value="<%=b.classname||""%>" />
+	
+	<label for="author">Author</label>
+	<input type="text" id="author" name="author" value="<%=b.author||session.login%>" />
+	
+	<label for="pubdate">Publication Date</label>
+	<input type="text" id="pubdate" name="pubdate" value="<%=b.pubdate||""%>" />
+	
+	<label for="tags">Tags</label>
+	<input type="text" id="tags" name="tags" value="<%=b.tags||""%>" />
+	
+	<label for="blogtext">Text</label>
+	<textarea id="blogtext" class="span12" rows="40"
+		name="blogtext"><%-blogtext%></textarea>
+	
+	<br />
+	<br />
+	
+	<label for="published" class="checkbox">
+		<input type="checkbox" value="true" name="published" id="published" 
+		<% if(b.published) { %>
+			checked="checked"
+		<% } %>
+		/> Published
+	</label>
+	
+	<br />
+	<br />
+	
+	<button type="submit" class="btn btn-success">
+		<i class="icon-hdd icon-white"></i>
+		Save
+	</button>
+</div>
+</form>

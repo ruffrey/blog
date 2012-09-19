@@ -7,6 +7,7 @@ var express = require('express')
   , routes = require('./routes')
   , fs = require('fs')
   , users = JSON.parse(fs.readFileSync('./users.json', 'utf8'))
+  , general = JSON.parse(fs.readFileSync('./general.json', 'utf8'))
   , secret = '98Jns104bf76zzx4'
   , app = module.exports = express.createServer()
 ;
@@ -18,6 +19,8 @@ app.configure(function(){
   app.set('view engine', 'ejs');
   app.set('users', users);
   app.set('secret', secret);
+  
+  app.set('general', general);
   
   app.set('blogs', JSON.parse(fs.readFileSync('./blogs.json', 'utf8')) );
   
@@ -38,6 +41,9 @@ app.dynamicHelpers({
 	},
 	users: function (req, res) {
 		return req.app.settings.users;
+	},
+	general: function (req, res) {
+		return req.app.settings.general;
 	}
 });
 
@@ -69,6 +75,17 @@ app.get('/accounts/edit/:login', routes.accounts.views.edit);
 
 app.get('/accounts/remove/:deleteLogin', routes.accounts.views.remove);
 app.post('/accounts/remove/:deleteLogin', routes.accounts.remove);
+
+/* blog management */
+app.get('/manage/blogs/create', routes.manage.blogs.create);
+app.get('/manage/blogs/edit/:urltitle', routes.manage.blogs.edit);
+app.post('/manage/blogs/save', routes.manage.blogs.save);
+app.get('/manage/blogs/:urltitle/publish', routes.manage.blogs.publish);
+app.get('/manage/blogs/:urltitle/unpublish', routes.manage.blogs.unpublish);
+
+app.get('/manage/blogs/:urltitle/preview', routes.blogs);
+
+app.post('/manage/general/save', routes.manage.general.save);
 
 
 /* app management */

@@ -1,9 +1,18 @@
 
 function comparePubdate(a, b) {
-	if (a.pubdate < b.pubdate)
+	var ap = new Date(a.pubdate)
+	   ,bp = new Date(b.pubdate)
+	;
+	
+	if (ap < bp)
+	{
 		return -1;
-	if (a.pubdate > b.pubdate)
+	}
+	if (ap > bp)
+	{
 		return 1;
+	}
+	
 	return 0;
 }
 
@@ -40,14 +49,21 @@ function refreshUsers(req, objUsers){
 	console.log('Users saved.');
 }
 
+function refreshGeneral(req, objGen){
+	var fs;!fs && (fs = require('fs'));
+	
+	fs.writeFileSync('./general.json', JSON.stringify(objGen));
+		
+	req.app.set('general', objGen);
+	console.log('General settings saved.');
+}
+
 var fs = require('fs')
    ,crypto = require('crypto');
 
 /* auth */
 exports.requireAuthentication = function(req, res, next){
-	if(
-		!req.session.login
-	)
+	if( !req.session.login )
 	{
 		res.render('login', {
 			title : 'Log in'
@@ -271,23 +287,146 @@ exports.manage.dash = function(req,res){
 	});
 };
 
+exports.manage.blogs = {};
+
+/* create a blog */
+exports.manage.blogs.create = function(req,res){
+	res.render('manage/create_blog', {
+		title: 'Blog - create new '
+	});
+};
+
+/* edit a blog */
+exports.manage.blogs.edit = function(req,res){
+	var blogClassname = req.params.urltitle.replace(/\-/g, '_');
+	
+	var b = req.app.settings.blogs[blogClassname] || {};
+	
+	b.classname = blogClassname;
+	
+	var title = 'Editing: ' + b.blogtitle;
+	
+	res.render('manage/edit_blog', {title: title, b: b });
+	
+};
+
+/* toggle published */
+exports.manage.blogs.unpublish = function(req,res){
+	
+	var blogs = req.app.settings.blogs;
+	
+	blogs[ req.params.urltitle.replace(/\-/g, '_') ].published = false;
+	
+	refreshBlogs( req, blogs );
+	
+	res.render('manage/dash', {
+		title : 'Dashboard'
+		,notify: 'Blog was unpublished.'
+	});
+}
+exports.manage.blogs.publish = function(req,res){
+
+	var blogs = req.app.settings.blogs;
+	
+	blogs[ req.params.urltitle.replace(/\-/g, '_') ].published = true;
+	
+	refreshBlogs( req, blogs );
+	
+	res.render('manage/dash', {
+		title : 'Dashboard'
+		,notify: 'Blog was published.'
+	});
+}
+/* receiving blog creation/save */
+exports.manage.blogs.save = function(req,res){
+	
+	/* Delete unnecessary properties after they are no longer needed */
+	
+	var action = req.body.origClassname ? 'saved' : 'created';
+	
+	var oblogs = req.app.settings.blogs;
+	
+	var cl = req.body.classname;
+	
+	delete req.body.classname;
+	
+	oblogs[cl] = oblogs[cl] || {};
+	
+	/* is it a save and did the filename change? */
+	if( req.body.origClassname
+		&& req.body.origClassname != cl 
+	)
+	{
+		fs.unlinkSync('./views/blogs/'+req.body.origClassname+'.ejs');
+		delete oblogs[req.body.origClassname];
+		delete req.body.origClassname;
+	}
+	
+	/* write out the changes */
+	fs.writeFileSync('./views/blogs/'+cl+'.ejs', req.body.blogtext);
+	delete req.body.blogtext;
+	
+	/* trimming tags and turning into array */
+	oblogs[cl].tags = req.body.tags
+						.replace(', ',',')
+						.replace(' ,',',')
+						.split(',');
+	
+	delete req.body.tags;
+	
+	/* parse into boolean */
+	req.body.published = req.body.published ? true : false;
+	
+	for( var b in req.body )
+	{
+		oblogs[cl][b] = req.body[b];
+	}
+	
+	refreshBlogs(req, oblogs);
+	
+	res.render('manage/dash', {
+		title: 'Dashboard'
+	   ,notify: '"'+req.body.blogtitle+'" was '+action+' successfully.'
+	});
+};
+
+exports.manage.general={};
+/* Saving general settings */
+exports.manage.general.save = function (req, res) {
+	
+	req.body.blogs_on_homepage = parseFloat(req.body.blogs_on_homepage) || 5;
+	
+	refreshGeneral(req, req.body);
+	
+	res.render('manage/dash', {
+		title: 'Dashboard'
+	   ,notify: 'Settings were saved successfully.'
+	});
+
+};
 /* View Rendering / Routing */
+
+/* Front page */
 exports.index = function (req, res) {
 	var blogs = req.app.settings.blogs;
 	
 	var mostRecent = [];
 	
 	// put into an array first
-	for (var b in blogs) {
-		mostRecent.push(blogs[b]);
-		mostRecent[mostRecent.length - 1].blogClassname = b;
+	for (var b in blogs) 
+	{
+		if( blogs[b].published )
+		{		
+			mostRecent.push(blogs[b]);
+			mostRecent[mostRecent.length - 1].blogClassname = b;
+		}
 	}
 	
 	// then sort by the date, the most recent first
 	mostRecent.sort(comparePubdate).reverse();
 	
 	// cut off the end
-	mostRecent.splice(2);
+	mostRecent.splice( req.app.settings.general.blogs_on_homepage );
 	
 	res.render('index', {
 		title : 'wigglebytes',
@@ -302,8 +441,11 @@ exports.allBlogs = function (req, res) {
 	
 	// put into an array first
 	for (var b in blogs) {
-		allb.push(blogs[b]);
-		allb[allb.length - 1].blogClassname = b;
+		if( blogs[b].published )
+		{
+			allb.push(blogs[b]);
+			allb[allb.length - 1].blogClassname = b;
+		}
 	}
 	
 	// then sort by the date, the most recent first
@@ -318,18 +460,26 @@ exports.allBlogs = function (req, res) {
 
 // View a blog
 exports.blogs = function (req, res) {
+	
 	var blogClassname = req.params.urltitle.replace(/\-/g, '_');
 	
+	var isPreview = req.path.lastIndexOf('preview') > req.path.lastIndexOf(req.params.urltitle);
+		
 	var blogs = req.app.settings.blogs;
 	
-	if (typeof(blogs[blogClassname]) == 'object'
-		 && blogs[blogClassname].published) {
+	if(
+		typeof(blogs[blogClassname]) == 'object' 
+		&& 
+		( blogs[blogClassname].published || isPreview )
+	)
+	{
 		// view name is the same as the classname
 		blogs[blogClassname].view = blogClassname;
 		
 		blogs[blogClassname].title = '[wigglebytes] ' + blogs[blogClassname].blogtitle;
 		
 		res.render('blogwrap', blogs[blogClassname]);
+		
 	} else {
 		res.render('404', {
 			title : '[wigglebytes] - Not found'
@@ -353,32 +503,40 @@ exports.search = function (req, res) {
 	t = 0,
 	q = 0;
 	
-	for (var b in blogs) {
-		matches = 0;
-		// need to find any matching tags
-		for (t = 0; t < blogs[b].tags.length; t++) {
-			for (q = 0; q < queryTerms.length; q++) {
-				if (blogs[b].tags[t].toLowerCase().indexOf(queryTerms[q]) > -1) {
+	for (var b in blogs) 
+	{
+		if( blogs[b].published )
+		{
+			matches = 0;
+			// need to find any matching tags
+			for (t = 0; t < blogs[b].tags.length; t++) {
+				for (q = 0; q < queryTerms.length; q++) {
+					if (blogs[b].tags[t].toLowerCase().indexOf(queryTerms[q]) > -1) {
+						matches++;
+					}
+				}
+				
+			}
+			// find any matching title words too
+			for (q = 0; q < queryTerms.length; q++) 
+			{
+				if (b.toLowerCase().indexOf(queryTerms[q]) > -1) 
+				{
 					matches++;
 				}
 			}
 			
-		}
-		// find any matching title words too
-		for (q = 0; q < queryTerms.length; q++) {
-			if (b.toLowerCase().indexOf(queryTerms[q]) > -1) {
-				matches++;
+			if (matches > 0) 
+			{
+				blogs[b].matches = matches;
+				blogs[b].blogClassname = b;
+				found.push(blogs[b]);
 			}
-		}
-		
-		if (matches > 0) {
-			blogs[b].matches = matches;
-			blogs[b].blogClassname = b;
-			found.push(blogs[b]);
 		}
 	}
 	
-	if (found.length == 1) {
+	if (found.length == 1) 
+	{
 		
 		var blog = found[0];
 		blog.view = blog.blogClassname;
