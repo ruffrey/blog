@@ -62,6 +62,9 @@ app.all('/accounts/*', routes.requireAuthentication);
 app.all('/accounts', routes.requireAuthentication);
 app.all('/manage/*', routes.requireAuthentication);
 app.all('/manage', routes.requireAuthentication);
+app.all('/accounts/*', routes.requireAdminOrUser);
+app.all('/accounts/admin/*', routes.requireAdmin);
+app.all('/manage/general/save', routes.requireAdmin);
 
 /* account stuff */
 app.get('/login', routes.manage.dash);
@@ -70,10 +73,13 @@ app.get('/logout', routes.accounts.logout);
 
 app.get('/accounts/create', routes.accounts.views.create);
 app.post('/accounts/create', routes.accounts.create);
+app.get('/accounts/admin/makeAdmin/:login', routes.accounts.admin.makeAdmin);
+app.get('/accounts/admin/unmakeAdmin/:login', routes.accounts.admin.unmakeAdmin);
 
 app.get('/accounts/edit/:login', routes.accounts.views.edit);
 
 app.get('/accounts/remove/:deleteLogin', routes.accounts.views.remove);
+
 app.post('/accounts/remove/:deleteLogin', routes.accounts.remove);
 
 /* blog management */
@@ -83,7 +89,7 @@ app.post('/manage/blogs/save', routes.manage.blogs.save);
 app.get('/manage/blogs/:urltitle/publish', routes.manage.blogs.publish);
 app.get('/manage/blogs/:urltitle/unpublish', routes.manage.blogs.unpublish);
 
-app.get('/manage/blogs/:urltitle/preview', routes.blogs);
+app.get('/manage/blogs/:urltitle/preview', routes.blogs.view);
 
 app.post('/manage/general/save', routes.manage.general.save);
 
@@ -93,13 +99,13 @@ app.get('/manage', routes.manage.dash);
 app.get('/manage/dash', routes.manage.dash);
 
 /* general viewer stuff */
-app.get('/', routes.index);
+app.get('/', routes.blogs.mostRecent);
 
-app.get('/blogs/:urltitle', routes.blogs);
-app.get('/blogs', routes.allBlogs);
+app.get('/blogs/:urltitle', routes.blogs.view);
+app.get('/blogs', routes.blogs.archive);
 
-app.get('/search/:query', routes.search);
-app.get('/search', routes.search);
+app.get('/search/:query', routes.blogs.search);
+app.get('/search', routes.blogs.search);
 
 // custom 404
 app.use(function(req,res){

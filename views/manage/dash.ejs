@@ -1,7 +1,54 @@
+<script type="text/javascript">
+$(function(){
+	$('a.make').hover(function(){
+		$(this)
+			.removeClass('btn-warning')
+			.addClass('btn-success')
+			.find('i')
+			.removeClass('icon-arrow-down')
+			.addClass('icon-arrow-up')
+			.addClass('icon-white')
+		;
+	},function(){
+		$(this)
+			.addClass('btn-warning')
+			.removeClass('btn-success')
+			.find('i')
+			.addClass('icon-arrow-down')
+			.removeClass('icon-arrow-up')
+			.removeClass('icon-white')
+		;
+	});
+	$('a.unmake').hover(function(){
+		$(this)
+			.addClass('btn-warning')
+			.removeClass('btn-success')
+			.find('i')
+			.addClass('icon-arrow-down')
+			.removeClass('icon-arrow-up')
+			.removeClass('icon-white')
+		;
+	},function(){
+		$(this)
+			.removeClass('btn-warning')
+			.addClass('btn-success')
+			.find('i')
+			.removeClass('icon-arrow-down')
+			.addClass('icon-arrow-up')
+			.addClass('icon-white')
+		;
+	})
+	.click(function(e){
+		var cnf = confirm('Are you sure you want to remove these admin privileges?');
+		if(!cnf){ e.preventDefault(); }
+	});
+});
+</script>
 <h1>Welcome, <%=session.display%></h1>
 <div class="row">
 	<br />
 	<div class="row">
+		<% if( session.admin ) { %>
 		<div class="span3">
 			<ul class="nav nav-list well" style="position:fixed;">
 				<li>
@@ -15,6 +62,7 @@
 				</li>
 			</ul>		
 		</div>
+		<% } %>
 		<div class="span9">
 			<div class="row">
 				<div class="span12 well" id="blogs">
@@ -70,28 +118,73 @@
 					<br />
 					<table class="table table-condensed">
 					<tbody>
-					<% for( var u in users ) { %>
+					<% 
+						var admin;
+						for( var u in users ) 
+						{ 
+							admin = users[u].admin || false;
+						
+					%>
 						
 						<tr>
-							<td><a href="/accounts/edit/<%=u%>">
+							<td>
+							<% if( session.admin || session.login == u) { %>
+								<a href="/accounts/edit/<%=u%>"
+									<%= session.login==u?"style='font-weight:bold'":""%>>
+									<%=users[u].display%> [<%=u%>]
+								</a>
+							<% } else { %>
 								<%=users[u].display%> [<%=u%>]
-							</a></td>
-							<td><a class="btn btn-danger" href="/accounts/remove/<%=u%>">
-								<i class="icon-remove icon-white"></i>
-							</a></td>
+							<% } %>
+							</td>
+							<td>
+								<% if(admin) { %>
+										admin
+								<% } else { %>
+										author
+								<% } %>
+							</td>
+							<td>
+								<% if(!admin && session.admin ) { %>
+								
+										<a class="btn btn-warning make"
+											title="Not admin, click to make admin"
+											href="/accounts/admin/makeAdmin/<%=u%>">
+											<i class="icon-arrow-down"></i>
+										</a>
+									</td>
+									<td>
+										<a class="btn btn-danger" 
+											href="/accounts/remove/<%=u%>">
+											<i class="icon-remove icon-white"></i>
+										</a>
+										
+								<% } else if( admin && session.admin ) { %>
+										<a class="btn btn-success unmake"
+											title="Is admin, click to remove admin"
+											href="/accounts/admin/unmakeAdmin/<%=u%>">
+											<i class="icon-arrow-up icon-white"></i>
+										</a>
+								<% } %>
+							</td>
+							
 						</tr>
 					<% } %>
 					</tbody>
 					</table>
+					<% if( session.admin ) { %>
 					<p>
 						<a href="/accounts/create">
 							<strong>Add new</strong>
 							<i class="icon-plus"></i>
 						</a>
 					</p>
+					<% } %>
 				</div>
 			</div>
-			<%-partial("./manage/gen_form")%>
+			<% if( session.admin ) { %>
+				<%-partial("./manage/gen_form")%>
+			<% } %>
 		
 		</div>
 	</div>	

@@ -22,7 +22,7 @@ $(function(){
 <% } %>
 
 <form method="post" action="/accounts/create">
-	<input name="origLogin" type="hidden" value="<%=create.origLogin%>" />
+	<input name="origLogin" type="hidden" value="<%=(create.origLogin||"")%>" />
 
 	<label for="login">Login</label>
 	<input name="login" id="login" value="<%=create.login%>" />

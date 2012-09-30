@@ -19,8 +19,9 @@
 			<%=general.home_button_text%>
 		</a>
 		<ul class="nav">
-		  <li><a href="/blogs">Archive</a></li>
-		  <li><a href="//www.wiggleware.com">Main Site</a></li>
+			<li class="navbar-text"><%=general.tagline%></li>
+			<li><a href="/blogs">Archive</a></li>
+			<li><a href="//www.wiggleware.com">Main Site</a></li>
 		</ul>
 		<form class="navbar-form pull-right" method="GET" action="/search">
 		  <input type="text" class="span2" 
@@ -66,13 +67,16 @@
 	</div>
 </div>
 <div class="row-fluid">
-	<div class="span9">
+	<div class="span6">
 		<div class="help-block">
 			&copy; 2012 <a href="//www.wiggleware.com">Wiggleware</a>
 			<a href="/manage">
 				<i class="icon-user"></i>
 			</a>
 		</div>
+	</div>
+	<div class="span3">
+		<div class="pull-right help-block">Content Management by Meat.js</div>
 	</div>
 	<div class="span3">
 		<div class="pull-right help-block">
